@@ -1,54 +1,49 @@
 <template>
   <h1>Sudoku solver</h1>
 
-  <div class="card">
-    <button type="button" @click="onClick">count is {{ count }}</button>
+  <Slider v-model:value="speed" />
+
+  <div class="s-l-button-container">
+    <SolveButton @click="onSolve" />
+    <ResetButton @click="onReset" />
   </div>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
-  <template v-for="(row, rowIndex) in board">
-    <div class="row">
-      <template v-for="(cell, cellIndex) in row">
-        <Tile v-model:value="board[rowIndex][cellIndex]" :extraClasses="getClasses(rowIndex, cellIndex)" />
-      </template>
-    </div>
-  </template>
+
+  <Board :board="board" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Tile from "./Tile.vue";
+import SolveButton from "./SolveButton.vue";
+import Slider from "./Slider.vue";
+import Board from "./Board.vue";
+import { BACKTRACKING } from "../types";
+import { solverMap } from "../solvers";
+import ResetButton from "./ResetButton.vue";
+import { BOARD_SIZE } from "../consts";
 
-const count = ref(0)
-const board = ref(Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => null)))
+const solverType = BACKTRACKING;
+const speed = ref(100);
+let board = ref([...generateEmptyBoard()]);
 
-function onClick() {
-  count.value++
-  console.log('the board is', board.value)
+function generateEmptyBoard(): null[][] {
+  return Array.from({ length: BOARD_SIZE }, () =>
+    Array.from({ length: BOARD_SIZE }, () => null),
+  );
 }
 
-function getClasses(rowIndex, cellIndex) {
-  let classes = ''
-  if (rowIndex % 3 === 2) {
-    classes += 'border-bottom'
-  }
-  if (cellIndex % 3 === 2) {
-    classes += ' border-right'
-  }
-  return classes
+function onSolve() {
+  solverMap[solverType](board.value, 0, 0, speed.value);
+}
+
+function onReset() {
+  board.value = generateEmptyBoard();
 }
 </script>
 
-<style>
-.border-bottom {
-  border-bottom: 2px solid white;
-}
-.border-right {
-  border-right: 2px solid white;
-}
-</style>
-
 <style scoped>
-.read-the-docs {
-  color: #888;
+.s-l-button-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 3em 0;
 }
 </style>
