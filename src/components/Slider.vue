@@ -1,6 +1,6 @@
 <template>
   <div class="s-l-slide-container">
-    <span class="s-l-slide-label">Speed {{ value }}</span>
+    <span class="s-l-slide-label">Delay (ms): {{ value }}</span>
     <input
       type="range"
       :min="MIN_SPEED"
@@ -23,9 +23,9 @@ const emit = defineEmits<{
   (e: "update:value", value: number): void;
 }>();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function onClick(event: any) {
-  emit("update:value", parseInt(event.target.value, 10));
+function onClick(event: Event) {
+  const target = event.target as HTMLInputElement;
+  emit("update:value", parseInt(target.value, 10));
 }
 </script>
 

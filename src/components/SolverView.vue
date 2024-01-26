@@ -8,27 +8,31 @@
     <ResetButton @click="onReset" />
   </div>
 
-  <Board :board="board" />
+  <Board :board="board" @update:board="onBoardClick" />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 import SolveButton from "./SolveButton.vue";
 import Slider from "./Slider.vue";
 import Board from "./Board.vue";
-import { BACKTRACKING } from "../types";
+import { BACKTRACKING, Grid, UpdateGridEvent } from "../types";
 import { solverMap } from "../solvers";
 import ResetButton from "./ResetButton.vue";
 import { BOARD_SIZE } from "../consts";
 
 const solverType = BACKTRACKING;
 const speed = ref(100);
-let board = ref([...generateEmptyBoard()]);
+let board: Ref<Grid> = ref([...generateEmptyBoard()]);
 
 function generateEmptyBoard(): null[][] {
   return Array.from({ length: BOARD_SIZE }, () =>
     Array.from({ length: BOARD_SIZE }, () => null),
   );
+}
+
+function onBoardClick(event: UpdateGridEvent) {
+  board.value[event.row][event.col] = event.value;
 }
 
 function onSolve() {

@@ -1,5 +1,5 @@
 <template>
-  <button :value="value" :class="classes" @click="onClick">
+  <button :value="value || ''" :class="classes" @click="onClick">
     <span>{{ value || "9" }}</span>
   </button>
 </template>
@@ -15,13 +15,13 @@ const emit = defineEmits<{
   (e: "update:value", value: number | null): void;
 }>();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function onClick(event: any) {
+function onClick(event: Event) {
   let val;
-  if (event.target.value === "" || event.target.value == null) {
+  const target = event.target as HTMLButtonElement;
+  if (target?.value == null || target.value === "") {
     val = null;
   } else {
-    val = parseInt(event.target.value, 10);
+    val = parseInt(target.value, 10);
   }
   let newVal;
   if (val === 9) {

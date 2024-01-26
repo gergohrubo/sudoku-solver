@@ -15,19 +15,18 @@
 <script setup lang="ts">
 import Tile from "./Tile.vue";
 import { BOARD_SIZE } from "../consts";
+import { Grid, UpdateGridEvent } from "../types";
 
 const { board } = defineProps<{
-  board: number[][];
+  board: Grid;
 }>();
 
 const emit = defineEmits<{
-  (e: "update:board", board: number[][]): void;
+  (e: "update:board", event: UpdateGridEvent): void;
 }>();
 
-function onChange(event: any, rowIndex: number, cellIndex: number) {
-  const newBoard = [...board];
-  newBoard[rowIndex][cellIndex] = event;
-  emit("update:board", newBoard);
+function onChange(value: number | null, row: number, col: number) {
+  emit("update:board", { value, row, col });
 }
 
 function appendVerticalBorderClass(classes: string, rowIndex: number): string {
